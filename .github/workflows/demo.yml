@@ -30,9 +30,19 @@ jobs:
         with:
           name: dist-files
           path: dist
+          # multiple artifacts can be uploaded by specifying multiple paths by pipeline syntax, for example:
+          # path: |
+          #  dist
+          #  package.json
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: dist-files
+      - name: List output artifacts downloaded
+        run: ls -la
       - name: Deploy
         run: echo "Deploying..."
