@@ -30,7 +30,7 @@ jobs:
         # after build we can obtain the outputs (values) of the build step and use them in the deploy step. For example, if the build step generates a file called dist/index.html, we can use that file in the deploy step.
       - name: Get some output from build step ß
         id: get-build-output
-        run: find dist/assets/*.js -type f -execir echo 'mycustom-output={}' >> $GITHUB_OUTPUT ';'
+        run: find dist/assets/*.js -type f -execdir echo 'mycustom-output={}' >> $GITHUB_OUTPUT ';'
         #run: find dist/assets/*.js -type f -execdir echo '::set-output name=mycustom-output::{}' ';'
 
         # The build artifacts are generated in the dist folder, which is uploaded as an artifact for the deploy job to use.
