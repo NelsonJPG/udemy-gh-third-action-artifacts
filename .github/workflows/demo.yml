@@ -18,6 +18,8 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      mycustom-output: ${{ steps.get-build-output.outputs.mycustom-output }}
     steps:
       - name: Get code
         uses: actions/checkout@v7
@@ -25,6 +27,13 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
+        # after build we can obtain the outputs (values) of the build step and use them in the deploy step. For example, if the build step generates a file called dist/index.html, we can use that file in the deploy step.
+      - name: Get some output from build step ß
+        id: get-build-output
+        run: find dist/assets/*.js -type f -exec  dir echo 'mycustom-output={}' >> $GITHUB_OUTPUT ';'
+        #run: find dist/assets/*.js -type f -execdir echo '::set-output name=mycustom-output::{}' ';'
+
+        # The build artifacts are generated in the dist folder, which is uploaded as an artifact for the deploy job to use.
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -44,5 +53,7 @@ jobs:
           name: dist-files
       - name: List output artifacts downloaded
         run: ls -la
+      - name: Output filename
+        run: 'echo "Filename: ${{ needs.build.outputs.mycustom-output }}"'
       - name: Deploy
         run: echo "Deploying..."
